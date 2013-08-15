@@ -23,6 +23,24 @@ function comboBoxHtml($label, $map, $selectedRowId) {
     return $html;
 }
 
+function modifyProductDetails($product, $prodLineId) {
+    $prodArray = array();
+    foreach ($product as $field => $value) {
+        $prodArray["$field"] = $value;
+    }
+    
+    $prodLineName = ProductLines::read($prodLineId) -> productLine;
+    $prodLineArray = array("ProductLine"=>$prodLineName);
+    
+    $prodArrayBegin = array_slice($prodArray, 1, 2);
+    $prodArrayEnd = array_slice($prodArray, 4, 6);
+            
+    $newArray = array_merge($prodArrayBegin, $prodLineArray, $prodArrayEnd);
+    $newArray['MSRP'] = $prodArray['mSRP'];
+    
+    return $newArray;
+}
+
 // Get from the database a map from CategoryId to Category Name, for use
 // with the Category combo box. The initial category is just the first one.
 // Thereafter the JavaScript looks after everything.
@@ -41,6 +59,8 @@ $productMap = Product::listAll($prodLineId);
 $prodIds = array_keys($productMap);
 $prodId = $prodIds[0];
 $product = Product::read($prodId);
+
+$prodArray = modifyProductDetails($product, $prodLineId);
 ?>
 
 <!DOCTYPE html>
@@ -73,9 +93,9 @@ $product = Product::read($prodId);
         <h2>Selected Product</h2>
         
         <table id="SelectedProduct" border="1">
-            <?php foreach ($product as $field => $value) { ?>
+            <?php foreach ($prodArray as $key => $value) { ?>
                 <tr>
-                    <td><?php echo $field?></td>
+                    <td><?php echo $key?></td>
                     <td><?php echo $value?></td>
                 </tr>
             <?php } ?>

@@ -45,7 +45,7 @@ class Product {
     /** Return an associative array id=>productName for all products in the
      *  database, or all matching a given productLineId (if given).
      * @global mysqli $DB
-     * @param int $[prodLineId
+     * @param int $prodLineId
      * @return associative array mapping productId to product, ordered by name
      */
     public static function listAll($prodLineId=NULL) {
