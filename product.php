@@ -1,6 +1,6 @@
 <?php
 /*
- * Declare the ProductLines class, representing a row of the productLines table.
+ * Declare the Product class, representing a row of the products table.
  * Since the database was imported from elsewhere and has capital letters
  * at the start of each field name, an internal tweak is used to convert
  * column names to php lower-case-first format.
@@ -11,21 +11,26 @@
  *
  * This class requires that a global mysqli variable $DB exists.
  */
-class ProductLines {
+class Product {
     public $id;
-    public $productLine;
-    public $textDescription;
-    public $htmlDescription;
-    public $image;
+    public $productCode;
+    public $productName;
+    public $productLineId;
+    public $productScale;
+    public $productVendor;
+    public $productDescription;
+    public $quantityInStock;
+    public $buyPrice;
+    public $MSRP;
 
     /*
-     * Return a ProductLine object read from the database for the given productLine.
+     * Return a Product object read from the database for the given product.
      * Throws an exception if no such product exists in the database.
      */
     public static function read($id) {
         global $DB;
-        $prod = new ProductLine();
-        $sql = "SELECT * FROM ProductLines WHERE id='$id'";
+        $prod = new Product();
+        $sql = "SELECT * FROM Products WHERE id='$id'";
         $result = $DB->query($sql);
         Product::checkResult($result);
         if ($result->num_rows !== 1) {
@@ -37,14 +42,18 @@ class ProductLines {
     }
 
 
-    /** Return an associative array id=>productName for all productLines in the
+    /** Return an associative array id=>productName for all products in the
      *  database, or all matching a given categoryId (if given).
      * @global mysqli $DB
+     * @param int $catId
      * @return associative array mapping productId to product
      */
-    public static function listAll() {
+    public static function listAll($prodLineId=NULL) {
         global $DB;
-        $sql = "SELECT id, productLine FROM ProductLines";
+        $sql = "SELECT id, productName FROM Products";
+        if ($catId) {
+            $sql .= " where productLineId = '$prodLineId'";
+        }
         $result = $DB->query($sql);
         Product::checkResult($result);
         $list = array();
@@ -55,22 +64,28 @@ class ProductLines {
     }
 
 
-    /** Return an array of all products in the database, for use by
+    /** Return an array of all products in the database (or the subset
+     *  matching the given category ID if given), for use by
      *  nwproductBrowser3.
      * @global mysqli $DB
+     * @param int $catId  Category ID that products are from (optional)
      * @return an array of Product objects containing all products, ordered
      * by name.
      */
-    public static function getAllProductLines() {
+    public static function getAllProducts($prodLineId=NULL) {
         global $DB;
-        $sql = "SELECT * FROM ProductLines ORDER BY productLine";
+        $sql = "SELECT * FROM Products";
+        if ($catId) {
+            $sql .= " WHERE productLineId = '$prodLineId'";
+        }
+        $sql .= " ORDER BY ProductName";
         $result = $DB->query($sql);
         Product::checkResult($result);
         $list = array();
         while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
             $prod = new Product();
             $prod->load($row);
-            $list[] = $row;
+            $list[] = $prod;
         }
         return $list;
     }

@@ -1,5 +1,10 @@
 <?php
-    $product = array("hi" => "lalala", "2" => "wheeee");
+
+    require_once ('dbinit.php');
+    require_once('productLines.php');
+    require_once ('product.php');
+    
+    $product = Product::read(1);
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +18,7 @@
         <h2>Selected Product</h2>
         
         
-        <table id="SelectedProduct">
+        <table id="SelectedProduct" border="1">
             <?php foreach ($product as $field => $value) { ?>
                 <tr>
                     <td><?php echo $field?></td>
