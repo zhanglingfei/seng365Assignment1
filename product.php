@@ -43,17 +43,18 @@ class Product {
 
 
     /** Return an associative array id=>productName for all products in the
-     *  database, or all matching a given categoryId (if given).
+     *  database, or all matching a given productLineId (if given).
      * @global mysqli $DB
-     * @param int $catId
-     * @return associative array mapping productId to product
+     * @param int $[prodLineId
+     * @return associative array mapping productId to product, ordered by name
      */
     public static function listAll($prodLineId=NULL) {
         global $DB;
         $sql = "SELECT id, productName FROM Products";
-        if ($catId) {
+        if ($prodLineId) {
             $sql .= " where productLineId = '$prodLineId'";
         }
+        $sql .= " ORDER BY productName";
         $result = $DB->query($sql);
         Product::checkResult($result);
         $list = array();
@@ -65,20 +66,20 @@ class Product {
 
 
     /** Return an array of all products in the database (or the subset
-     *  matching the given category ID if given), for use by
+     *  matching the given prodLineegory ID if given), for use by
      *  nwproductBrowser3.
      * @global mysqli $DB
-     * @param int $catId  Category ID that products are from (optional)
+     * @param int $prodLineId  ProductLines ID that products are from (optional)
      * @return an array of Product objects containing all products, ordered
      * by name.
      */
     public static function getAllProducts($prodLineId=NULL) {
         global $DB;
         $sql = "SELECT * FROM Products";
-        if ($catId) {
+        if ($prodLineId) {
             $sql .= " WHERE productLineId = '$prodLineId'";
         }
-        $sql .= " ORDER BY ProductName";
+        $sql .= " ORDER BY productName";
         $result = $DB->query($sql);
         Product::checkResult($result);
         $list = array();

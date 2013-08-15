@@ -24,10 +24,10 @@ class ProductLines {
      */
     public static function read($id) {
         global $DB;
-        $prod = new ProductLine();
+        $prod = new ProductLines();
         $sql = "SELECT * FROM ProductLines WHERE id='$id'";
         $result = $DB->query($sql);
-        Product::checkResult($result);
+        ProductLines::checkResult($result);
         if ($result->num_rows !== 1) {
             throw new Exception("Product ID $id not found in database");
         }
@@ -40,16 +40,16 @@ class ProductLines {
     /** Return an associative array id=>productName for all productLines in the
      *  database, or all matching a given categoryId (if given).
      * @global mysqli $DB
-     * @return associative array mapping productId to product
+     * @return associative array mapping productId to product, ordered by name
      */
     public static function listAll() {
         global $DB;
-        $sql = "SELECT id, productLine FROM ProductLines";
+        $sql = "SELECT id, productLine FROM ProductLines ORDER BY productLine";
         $result = $DB->query($sql);
-        Product::checkResult($result);
+        ProductLines::checkResult($result);
         $list = array();
         while (($row = $result->fetch_object()) !== NULL) {
-            $list[$row->id] = $row->productName;
+            $list[$row->id] = $row->productLine;
         }
         return $list;
     }
@@ -65,10 +65,10 @@ class ProductLines {
         global $DB;
         $sql = "SELECT * FROM ProductLines ORDER BY productLine";
         $result = $DB->query($sql);
-        Product::checkResult($result);
+        ProductLines::checkResult($result);
         $list = array();
         while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
-            $prod = new Product();
+            $prod = new ProductLines();
             $prod->load($row);
             $list[] = $row;
         }
