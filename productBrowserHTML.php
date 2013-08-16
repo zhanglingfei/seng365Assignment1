@@ -1,5 +1,3 @@
-    <body>
-        <h1>Classic Models: <?php echo $title ?></h1>
         <form id='browserForm' action='productBrowser.php' method='post'>
             <table id="ComboBoxes">
                 <tr>
