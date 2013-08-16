@@ -1,5 +1,4 @@
 <?php
-
 require_once ('dbinit.php');
 require_once('productLines.php');
 require_once ('product.php');
@@ -16,7 +15,11 @@ function comboBoxHtml($label, $map, $selectedRowId) {
     $html = "<select id='$label' name='$label'";
     $html .= " size=10>";
     foreach ($map as $id => $name) {
-        $selected = $id === intval($selectedRowId) ? 'selected' : '';
+        if ($id === intval($selectedRowId)) {
+            $selected = 'selected';
+        } else {
+            $selected = '';
+        }
         $html .= "<option value='$id' $selected>$name</option>\n";
     }
     $html .= "</select>\n";
@@ -28,78 +31,55 @@ function modifyProductDetails($product, $prodLineId) {
     foreach ($product as $field => $value) {
         $prodArray["$field"] = $value;
     }
-    
-    $prodLineName = ProductLines::read($prodLineId) -> productLine;
-    $prodLineArray = array("ProductLine"=>$prodLineName);
-    
+
+    $prodLineName = ProductLines::read($prodLineId)->productLine;
+    $prodLineArray = array("ProductLine" => $prodLineName);
+
     $prodArrayBegin = array_slice($prodArray, 1, 2);
     $prodArrayEnd = array_slice($prodArray, 4, 6);
-            
+
     $newArray = array_merge($prodArrayBegin, $prodLineArray, $prodArrayEnd);
     $newArray['MSRP'] = $prodArray['mSRP'];
-    
+
     return $newArray;
 }
 
+$isReload = isset($_POST['productLines']) && isset($_POST['products']);
+
 // Get from the database a map from CategoryId to Category Name, for use
-// with the Category combo box. The initial category is just the first one.
-// Thereafter the JavaScript looks after everything.
+// with the Category combo box. The current category is taken to
+// be the currently selected one on a reload or the first category
+// in the map otherwise.
 
 $prodLinesMap = ProductLines::listAll();
-$prodLinesIds = array_keys($prodLinesMap);
-$prodLineId = $prodLinesIds[0];
+
+if ($isReload) {
+    $prodLineId = $_POST['productLines'];
+} else {
+    $prodLineId = array_shift(array_keys($prodLinesMap));
+}
 
 // Get a map from ProductId to ProductName for all products in the current
 // category, for use with the Product combo box.
 
 $productMap = Product::listAll($prodLineId);
 
-// The currently selected product is just the first product in the first category
+// Get the currently-selected product details from the Products table.
+// The currently product is taken from the combobox on a reload or
+// as the first item in the map otherwise.
 
-$prodIds = array_keys($productMap);
-$prodId = $prodIds[0];
+if ($isReload && $_POST['whatChanged'] === 'Products') {
+    $prodId = $_POST['products'];
+} else {
+    $prodId = array_shift(array_keys($productMap));
+}
+
 $product = Product::read($prodId);
-
 $prodArray = modifyProductDetails($product, $prodLineId);
-?>
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Classic Models Products</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
-    <body>
-        <h1>Classic Models: Products</h1>
-        <table id="ComboBoxes">
-            <tr>
-                <th>Product Lines</th>
-                <th>Products</th>
-            </tr>
-            <tr>
-                <td>
-                    <?php 
-                    echo comboBoxHtml('Product Lines', $prodLinesMap, $prodLineId);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    echo comboBoxHtml('Products', $productMap, $prodId);
-                    ?>
-                </td>
-            </tr>
-        </table>
-        
-        <h2>Selected Product</h2>
-        
-        <table id="SelectedProduct" border="1">
-            <?php foreach ($prodArray as $key => $value) { ?>
-                <tr>
-                    <td><?php echo $key?></td>
-                    <td><?php echo $value?></td>
-                </tr>
-            <?php } ?>
-        </table>
- 
-    </body>
-</html>
+
+// =========== THE MAIN FORM =================
+$title = "Products";
+require_once('generalHeadHTML.php');
+require_once('productBrowserHTML.php');
+?>
