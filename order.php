@@ -1,6 +1,6 @@
 <?php
 /*
- * Declare the ProductLines class, representing a row of the productLines table.
+ * Declare the Product class, representing a row of the products table.
  * Since the database was imported from elsewhere and has capital letters
  * at the start of each field name, an internal tweak is used to convert
  * column names to php lower-case-first format.
@@ -11,25 +11,28 @@
  *
  * This class requires that a global mysqli variable $DB exists.
  */
-class ProductLines {
+class Order {
     public $id;
-    public $productLine;
-    public $textDescription;
-    public $htmlDescription;
-    public $image;
+    public $orderNumber;
+    public $orderDate;
+    public $requiredDate;
+    public $shippedDate;
+    public $status;
+    public $comments;
+    public $customerId;
 
     /*
-     * Return a ProductLine object read from the database for the given productLine.
+     * Return a Product object read from the database for the given product.
      * Throws an exception if no such product exists in the database.
      */
     public static function read($id) {
         global $DB;
-        $prod = new ProductLines();
-        $sql = "SELECT * FROM Ass1_ProductLines WHERE id='$id'";
+        $prod = new Order();
+        $sql = "SELECT * FROM Ass1_Orders WHERE id='$id'";
         $result = $DB->query($sql);
-        ProductLines::checkResult($result);
+        Order::checkResult($result);
         if ($result->num_rows !== 1) {
-            throw new Exception("Product ID $id not found in database");
+            throw new Exception("Order ID $id not found in database");
         }
 
         $prod->load($result->fetch_array(MYSQLI_ASSOC));
@@ -37,40 +40,51 @@ class ProductLines {
     }
 
 
-    /** Return an associative array id=>productName for all productLines in the
-     *  database, or all matching a given categoryId (if given).
+    /** Return an associative array id=>productName for all products in the
+     *  database, or all matching a given productLineId (if given).
      * @global mysqli $DB
+     * @param int $prodLineId
      * @return associative array mapping productId to product, ordered by name
      */
-    public static function listAll() {
+    public static function listAll($customerId=NULL) {
         global $DB;
-        $sql = "SELECT id, productLine FROM Ass1_ProductLines ORDER BY productLine";
+        $sql = "SELECT id, orderNumber FROM Ass1_Orders";
+        if ($customerId) {
+            $sql .= " where customerId = '$customerId'";
+        }
+        $sql .= " ORDER BY orderNumber";
         $result = $DB->query($sql);
-        ProductLines::checkResult($result);
+        Order::checkResult($result);
         $list = array();
         while (($row = $result->fetch_object()) !== NULL) {
-            $list[$row->id] = $row->productLine;
+            $list[$row->id] = $row->orderNumber;
         }
         return $list;
     }
 
 
-    /** Return an array of all products in the database, for use by
+    /** Return an array of all products in the database (or the subset
+     *  matching the given prodLineegory ID if given), for use by
      *  nwproductBrowser3.
      * @global mysqli $DB
+     * @param int $prodLineId  ProductLines ID that products are from (optional)
      * @return an array of Product objects containing all products, ordered
      * by name.
      */
-    public static function getAllProductLines() {
+    public static function getAllOrders($customerId=NULL) {
         global $DB;
-        $sql = "SELECT * FROM Ass1_ProductLines ORDER BY productLine";
+        $sql = "SELECT * FROM Ass1_Orders";
+        if ($customerId) {
+            $sql .= " WHERE customerId = '$customerId'";
+        }
+        $sql .= " ORDER BY orderNumber";
         $result = $DB->query($sql);
-        ProductLines::checkResult($result);
+        Order::checkResult($result);
         $list = array();
         while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
-            $prod = new ProductLines();
+            $prod = new Product();
             $prod->load($row);
-            $list[] = $row;
+            $list[] = $prod;
         }
         return $list;
     }

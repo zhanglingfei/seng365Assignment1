@@ -11,17 +11,13 @@
  *
  * This class requires that a global mysqli variable $DB exists.
  */
-class Product {
+class OrderDetails {
     public $id;
-    public $productCode;
-    public $productName;
-    public $productLineId;
-    public $productScale;
-    public $productVendor;
-    public $productDescription;
-    public $quantityInStock;
-    public $buyPrice;
-    public $MSRP;
+    public $orderId;
+    public $productId;
+    public $quantityOrdered;
+    public $priceEach;
+    public $orderLineNumber;
 
     /*
      * Return a Product object read from the database for the given product.
@@ -29,12 +25,30 @@ class Product {
      */
     public static function read($id) {
         global $DB;
-        $prod = new Product();
-        $sql = "SELECT * FROM Ass1_Products WHERE id='$id'";
+        $prod = new OrderDetails();
+        $sql = "SELECT * FROM Ass1_OrderDetails WHERE id='$id'";
         $result = $DB->query($sql);
-        Product::checkResult($result);
+        OrderDetails::checkResult($result);
         if ($result->num_rows !== 1) {
-            throw new Exception("Product ID $id not found in database");
+            throw new Exception("ID $id not found in database");
+        }
+
+        $prod->load($result->fetch_array(MYSQLI_ASSOC));
+        return $prod;
+    }
+    
+        /*
+     * Return a Product object read from the database for the given product.
+     * Throws an exception if no such product exists in the database.
+     */
+    public static function readDetails($orderId) {
+        global $DB;
+        $prod = new OrderDetails();
+        $sql = "SELECT * FROM Ass1_OrderDetails WHERE orderId='$orderId'";
+        $result = $DB->query($sql);
+        OrderDetails::checkResult($result);
+        if ($result->num_rows !== 1) {
+            throw new Exception("OrderDetails ID $orderId not found in database");
         }
 
         $prod->load($result->fetch_array(MYSQLI_ASSOC));
@@ -43,48 +57,48 @@ class Product {
 
 
     /** Return an associative array id=>productName for all products in the
-     *  database, or all matching a given productLineId (if given).
+     *  database, or all matching a given orderId (if given).
      * @global mysqli $DB
      * @param int $prodLineId
      * @return associative array mapping productId to product, ordered by name
      */
-    public static function listAll($prodLineId=NULL) {
+    public static function listAll($orderId=NULL) {
         global $DB;
-        $sql = "SELECT id, productName FROM Ass1_Products";
-        if ($prodLineId) {
-            $sql .= " where productLineId = '$prodLineId'";
+        $sql = "SELECT id, orderId FROM Ass1_OrderDetails";
+        if ($orderId) {
+            $sql .= " where orderId = '$orderId'";
         }
-        $sql .= " ORDER BY productName";
+        $sql .= " ORDER BY orderId";
         $result = $DB->query($sql);
-        Product::checkResult($result);
+        OrderDetails::checkResult($result);
         $list = array();
         while (($row = $result->fetch_object()) !== NULL) {
-            $list[$row->id] = $row->productName;
+            $list[$row->id] = $row->orderId;
         }
         return $list;
     }
 
 
     /** Return an array of all products in the database (or the subset
-     *  matching the given prodLineegory ID if given), for use by
+     *  matching the given prodLine ID if given), for use by
      *  nwproductBrowser3.
      * @global mysqli $DB
      * @param int $prodLineId  ProductLines ID that products are from (optional)
      * @return an array of Product objects containing all products, ordered
      * by name.
      */
-    public static function getAllProducts($prodLineId=NULL) {
+    public static function getAllOrderDetails($orderId=NULL) {
         global $DB;
-        $sql = "SELECT * FROM Ass1_Products";
-        if ($prodLineId) {
-            $sql .= " WHERE productLineId = '$prodLineId'";
+        $sql = "SELECT * FROM Ass1_OrderDetails";
+        if ($orderId) {
+            $sql .= " WHERE orderId = '$orderId'";
         }
-        $sql .= " ORDER BY productName";
+        $sql .= " ORDER BY orderId";
         $result = $DB->query($sql);
-        Product::checkResult($result);
+        OrderDetails::checkResult($result);
         $list = array();
         while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
-            $prod = new Product();
+            $prod = new OrderDetails();
             $prod->load($row);
             $list[] = $prod;
         }
