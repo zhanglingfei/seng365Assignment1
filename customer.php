@@ -44,6 +44,28 @@ class Customer {
         $prod->load($result->fetch_array(MYSQLI_ASSOC));
         return $prod;
     }
+    
+    /** Return an associative array id=>customerName for all products in the
+     *  database, or all matching a given productLineId (if given).
+     * @global mysqli $DB
+     * @param int $prodLineId
+     * @return associative array mapping productId to product, ordered by name
+     */
+    public static function listAll($customerId=NULL) {
+        global $DB;
+        $sql = "SELECT id, customerName FROM Ass1_Customers";
+        if ($customerId) {
+            $sql .= " where customerId = '$customerId'";
+        }
+        $sql .= " ORDER BY customerName";
+        $result = $DB->query($sql);
+        Customer::checkResult($result);
+        $list = array();
+        while (($row = $result->fetch_object()) !== NULL) {
+            $list[$row->id] = $row->customerName;
+        }
+        return $list;
+    }
 
 
     // Given a row from the database, copy all database column values

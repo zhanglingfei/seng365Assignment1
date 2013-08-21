@@ -27,55 +27,17 @@ function comboBoxHtml($label, $map, $selectedRowId) {
     return $html;
 }
 
-function modifyOrderDetails($order) {
-    $orderArray = array();
-    foreach ($order as $field => $value) {
-        $orderArray["$field"] = $value;
-    }
 
-    $customerId = $order->customerId;
-    $customerName = Customer::readCustomerName($customerId);
-    $custNameArray = array("customerName" => $customerName);
-    
-    $orderDetails = OrderDetails::readDetails($order->id);
-    $detailsArray = array();
-    foreach ($orderDetails as $field => $value) {
-        $detailsArray["$field"] = $value;
-    }
-    
-    $productId = $orderDetails->productId;
-    $productName = Product::read($productId)->productName;
-    $prodNameArray = array("ProductName" => $productName);
-    
-    $arr1 = array_slice($orderArray, 1, 6);
-    $arr2 = array_slice($detailsArray, 3, 2);
-
-    $newArray = array_merge($arr1, $custNameArray, $prodNameArray, $arr2);
-
-    return $newArray;
-}
-
-//$isReload = isset($_POST['productLines']) && isset($_POST['products']);
+$customerMap = Customer::listAll();
+$customerId = array_shift(array_keys($customerMap));
 
 // Get a map from ProductId to ProductName for all products in the current
 // category, for use with the Product combo box.
 
-$orderMap = Order::listAll();
-
-// Get the currently-selected product details from the Products table.
-// The currently product is taken from the combobox on a reload or
-// as the first item in the map otherwise.
-
+$orderMap = Order::listAll($customerId);
 $orderId = array_shift(array_keys($orderMap));
 
-//if ($isReload && $_POST['whatChanged'] === 'Products') {
-//    $prodId = $_POST['products'];
-//} else {
-//    $prodId = array_shift(array_keys($productMap));
-//}
-
-$order = Order::read($orderId);
-$orderArray = modifyOrderDetails($order);
+$order = Order::readToDisplay($orderId);
 
 
 // =========== THE MAIN FORM =================

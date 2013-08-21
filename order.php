@@ -38,6 +38,21 @@ class Order {
         $prod->load($result->fetch_array(MYSQLI_ASSOC));
         return $prod;
     }
+    
+    public static function readToDisplay($id) {
+        global $DB;
+        $prod = new Order();
+        $sql = "SELECT orderDate, requiredDate, shippedDate, status, comments";
+        $sql .= " FROM Ass1_Orders WHERE id='$id'";
+        $result = $DB->query($sql);
+        Order::checkResult($result);
+        if ($result->num_rows !== 1) {
+            throw new Exception("Order ID $id not found in database");
+        }
+
+        $prod->load($result->fetch_array(MYSQLI_ASSOC));
+        return $prod;
+    }
 
 
     /** Return an associative array id=>productName for all products in the
@@ -82,7 +97,7 @@ class Order {
         Order::checkResult($result);
         $list = array();
         while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
-            $prod = new Product();
+            $prod = new Order();
             $prod->load($row);
             $list[] = $prod;
         }
