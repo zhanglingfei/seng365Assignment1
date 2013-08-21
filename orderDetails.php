@@ -37,24 +37,6 @@ class OrderDetails {
         return $prod;
     }
     
-        /*
-     * Return a Product object read from the database for the given product.
-     * Throws an exception if no such product exists in the database.
-     */
-    public static function readDetails($orderId) {
-        global $DB;
-        $prod = new OrderDetails();
-        $sql = "SELECT * FROM Ass1_OrderDetails WHERE orderId='$orderId'";
-        $result = $DB->query($sql);
-        OrderDetails::checkResult($result);
-        if ($result->num_rows !== 1) {
-            throw new Exception("OrderDetails ID $orderId not found in database");
-        }
-
-        $prod->load($result->fetch_array(MYSQLI_ASSOC));
-        return $prod;
-    }
-
 
     /** Return an associative array id=>productName for all products in the
      *  database, or all matching a given orderId (if given).
@@ -90,6 +72,25 @@ class OrderDetails {
     public static function getAllOrderDetails($orderId=NULL) {
         global $DB;
         $sql = "SELECT * FROM Ass1_OrderDetails";
+        if ($orderId) {
+            $sql .= " WHERE orderId = '$orderId'";
+        }
+        $sql .= " ORDER BY orderId";
+        $result = $DB->query($sql);
+        OrderDetails::checkResult($result);
+        $list = array();
+        while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
+            $prod = new OrderDetails();
+            $prod->load($row);
+            $list[] = $prod;
+        }
+        return $list;
+    }
+    
+    public static function getAllDetails($orderId=NULL) {
+        global $DB;
+        $sql = "SELECT productId, quantityOrdered, priceEach";
+        $sql .= " FROM Ass1_OrderDetails";
         if ($orderId) {
             $sql .= " WHERE orderId = '$orderId'";
         }

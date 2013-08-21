@@ -11,8 +11,13 @@ if (!isset($_GET['orderId']) || !is_numeric($orderId = $_GET['orderId'])) {
     die("Bad parameter");
 }
 
-$order = OrderDetails::read($_GET['orderId']);
-$productName = Product::read($order->productId)->productName;
+$products = OrderDetails::getAllDetails($_GET['orderId']);
+
+foreach ($products as $product) {
+    $productName = Product::read($product->id)->productName;
+    //$product['productName'=>$productName];
+}
+
 $partOrder = array_slice($order, 4, 2);
 $orderArray = array_merge(array('productName'=>$productName), $partOrder); 
 echo json_encode($orderArray);

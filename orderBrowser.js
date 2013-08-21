@@ -9,6 +9,7 @@
 
     var REQUEST_COMPLETE = 4,      // ReadyState of XMLHttpRequest when done
         OK = 200,                  // HTTP response OK code
+        orderProductsXHR = null,
         orderListXHR = null,
         orderDetailsXHR = null;  // XMLHttpRequest for product details
     
@@ -19,6 +20,23 @@
         option.text = text;
         option.value = value;
         selectbox.options.add(option);
+    }
+    
+    function productsArrived() {
+        var products, prodTable, i;
+        
+        products = JSON.parse(orderDetailsXHR.responseText);
+        prodTable = document.getElementById("OrderProducts");
+    }
+    
+    function loadProducts() {
+        var orderID = document.getElementById("orders").value,
+            resource = "orderproductsjson.php?orderId=" + orderID;
+
+        orderProductsXHR = new XMLHttpRequest();
+        orderProductsXHR.onreadystatechange = orderDetailsArrived;
+        orderProductsXHR.open("GET", resource, true);
+        orderProductsXHR.send();   
     }
     
     // Called asynchronously as the state of the
@@ -39,13 +57,14 @@
                 cells[1].innerHTML = order[cells[0].innerHTML];
             }
         }
+        loadProducts();
     }
     
     // Called by the category combo box's onChange event.
     // Initiates an XMLHttpRequest to obtain the list of product
     // names and IDs required to update the Products combo box.
     function loadOrderDetails() {
-        var orderID = document.getElementById("order").value,
+        var orderID = document.getElementById("orders").value,
             resource = "orderdetailsjson.php?orderId=" + orderID;
 
         orderDetailsXHR = new XMLHttpRequest();
