@@ -4,11 +4,11 @@ header("Content-type: application/json; charset=utf-8");
 // returning JSON-encoded data.
 
 require_once('dbinit.php');
-require_once('order.php');
+require_once('orderDetails.php');
 
-if (!isset($_GET['customerId']) || !is_numeric($customerId = $_GET['customerId'])) {
+if (!isset($_GET['orderId']) || !is_numeric($orderId = $_GET['orderId'])) {
     die("Bad parameter");
 }
 
-$orders = Order::getAllOrders($_GET['customerId']);
-echo json_encode($orders);
+$orderLines = OrderDetails::getOrderLines($_GET['orderId']); 
+echo json_encode($orderLines);

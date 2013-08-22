@@ -39,7 +39,7 @@ class Order {
         return $prod;
     }
     
-    public static function readToDisplay($id) {
+    public static function readColumns($id) {
         global $DB;
         $prod = new Order();
         $sql = "SELECT orderDate, requiredDate, shippedDate, status, comments";
@@ -77,9 +77,33 @@ class Order {
         return $list;
     }
 
+        /** Return an associative array id=>productName for all products in the
+     *  database, or all matching a given productLineId (if given).
+     * @global mysqli $DB
+     * @param int $prodLineId
+     * @return associative array mapping productId to product, ordered by name
+     */
+    public static function listAllCustomers() {
+        global $DB;
+        
+        $subquery = "(SELECT * FROM Ass1_Orders";
+        $subquery .= " WHERE Ass1_Customers.id = Ass1_Orders.customerId)";
+        
+        $sql = "SELECT id, customerName";
+        $sql .= " FROM Ass1_Customers WHERE EXISTS ";
+        $sql .= $subquery;
+        $sql .= " ORDER BY customerName";
+        $result = $DB->query($sql);
+        Order::checkResult($result);
+        $list = array();
+        while (($row = $result->fetch_object()) !== NULL) {
+            $list[$row->id] = $row->customerName;
+        }
+        return $list;
+    }
 
     /** Return an array of all products in the database (or the subset
-     *  matching the given prodLineegory ID if given), for use by
+     *  matching the given prodLine ID if given), for use by
      *  nwproductBrowser3.
      * @global mysqli $DB
      * @param int $prodLineId  ProductLines ID that products are from (optional)

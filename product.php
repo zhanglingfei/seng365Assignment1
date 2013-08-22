@@ -97,8 +97,8 @@ class Product {
     // first char to lower case.
     private function load($row) {
         foreach ($row as $field => $value) {
-            $fieldName = strtolower($field[0]) . substr($field, 1);
-            $this->$fieldName = $value;
+            //$fieldName = strtolower($field[0]) . substr($field, 1);
+            $this->$field = $value;
         }
     }
 

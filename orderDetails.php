@@ -37,30 +37,6 @@ class OrderDetails {
         return $prod;
     }
     
-
-    /** Return an associative array id=>productName for all products in the
-     *  database, or all matching a given orderId (if given).
-     * @global mysqli $DB
-     * @param int $prodLineId
-     * @return associative array mapping productId to product, ordered by name
-     */
-    public static function listAll($orderId=NULL) {
-        global $DB;
-        $sql = "SELECT id, orderId FROM Ass1_OrderDetails";
-        if ($orderId) {
-            $sql .= " where orderId = '$orderId'";
-        }
-        $sql .= " ORDER BY orderId";
-        $result = $DB->query($sql);
-        OrderDetails::checkResult($result);
-        $list = array();
-        while (($row = $result->fetch_object()) !== NULL) {
-            $list[$row->id] = $row->orderId;
-        }
-        return $list;
-    }
-
-
     /** Return an array of all products in the database (or the subset
      *  matching the given prodLine ID if given), for use by
      *  nwproductBrowser3.
@@ -69,43 +45,23 @@ class OrderDetails {
      * @return an array of Product objects containing all products, ordered
      * by name.
      */
-    public static function getAllOrderDetails($orderId=NULL) {
+    public static function getOrderLines($orderId=NULL) {
         global $DB;
-        $sql = "SELECT * FROM Ass1_OrderDetails";
+        $sql = "SELECT productName, quantityOrdered, priceEach";
+        $sql .= " FROM Ass1_Products, Ass1_OrderDetails";
         if ($orderId) {
-            $sql .= " WHERE orderId = '$orderId'";
+            $sql .= " WHERE Ass1_Products.id = Ass1_OrderDetails.productId";
+            $sql .= " AND orderId = '$orderId'";
         }
-        $sql .= " ORDER BY orderId";
+        $sql .= " ORDER BY orderLineNumber";
         $result = $DB->query($sql);
         OrderDetails::checkResult($result);
         $list = array();
         while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
-            $prod = new OrderDetails();
-            $prod->load($row);
-            $list[] = $prod;
+            $list[] = $row;
         }
         return $list;
     }
-    
-    public static function getAllDetails($orderId=NULL) {
-        global $DB;
-        $sql = "SELECT productId, quantityOrdered, priceEach";
-        $sql .= " FROM Ass1_OrderDetails";
-        if ($orderId) {
-            $sql .= " WHERE orderId = '$orderId'";
-        }
-        $sql .= " ORDER BY orderId";
-        $result = $DB->query($sql);
-        OrderDetails::checkResult($result);
-        $list = array();
-        while (($row = $result->fetch_array(MYSQLI_ASSOC)) !== NULL) {
-            $prod = new OrderDetails();
-            $prod->load($row);
-            $list[] = $prod;
-        }
-        return $list;
-    }
-
 
     // Given a row from the database, copy all database column values
     // into 'this', converting column names to fields names by converting

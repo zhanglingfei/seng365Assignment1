@@ -28,7 +28,7 @@ function comboBoxHtml($label, $map, $selectedRowId) {
 }
 
 
-$customerMap = Customer::listAll();
+$customerMap = Order::listAllCustomers();
 $customerId = array_shift(array_keys($customerMap));
 
 // Get a map from ProductId to ProductName for all products in the current
@@ -37,8 +37,8 @@ $customerId = array_shift(array_keys($customerMap));
 $orderMap = Order::listAll($customerId);
 $orderId = array_shift(array_keys($orderMap));
 
-$order = Order::readToDisplay($orderId);
-
+$order = Order::readColumns($orderId);
+$orderLines = OrderDetails::getOrderLines($orderId);
 
 // =========== THE MAIN FORM =================
 $title = "Orders";

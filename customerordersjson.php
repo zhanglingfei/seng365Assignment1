@@ -6,9 +6,9 @@ header("Content-type: application/json; charset=utf-8");
 require_once('dbinit.php');
 require_once('order.php');
 
-if (!isset($_GET['orderId']) || !is_numeric($orderId = $_GET['orderId'])) {
+if (!isset($_GET['customerId']) || !is_numeric($customerId = $_GET['customerId'])) {
     die("Bad parameter");
 }
 
-$order = Order::readToDisplay($_GET['orderId']);
-echo json_encode($order);
+$orders = Order::getAllOrders($_GET['customerId']);
+echo json_encode($orders);
