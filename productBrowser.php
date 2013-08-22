@@ -26,22 +26,22 @@ function comboBoxHtml($label, $map, $selectedRowId) {
     return $html;
 }
 
-//function modifyProductDetails($product, $prodLineId) {
-//    $prodArray = array();
-//    foreach ($product as $field => $value) {
-//        $prodArray["$field"] = $value;
-//    }
-//
-//    $prodLineName = ProductLines::read($prodLineId)->productLine;
-//    $prodLineArray = array("ProductLine" => $prodLineName);
-//
-//    $prodArrayBegin = array_slice($prodArray, 1, 2);
-//    $prodArrayEnd = array_slice($prodArray, 4, 6);
-//
-//    $newArray = array_merge($prodArrayBegin, $prodLineArray, $prodArrayEnd);
-//
-//    return $newArray;
-//}
+function modifyProductDetails($product, $prodLineId) {
+    $prodArray = array();
+    foreach ($product as $field => $value) {
+        $prodArray["$field"] = $value;
+    }
+
+    $prodLineName = ProductLines::read($prodLineId)->productLine;
+    $prodLineArray = array("ProductLine" => $prodLineName);
+
+    $prodArrayBegin = array_slice($prodArray, 1, 2);
+    $prodArrayEnd = array_slice($prodArray, 4, 6);
+
+    $newArray = array_merge($prodArrayBegin, $prodLineArray, $prodArrayEnd);
+
+    return $newArray;
+}
 
 $isReload = isset($_POST['productLines']) && isset($_POST['products']);
 
@@ -74,7 +74,7 @@ if ($isReload && $_POST['whatChanged'] === 'Products') {
 }
 
 $product = Product::read($prodId);
-//$prodArray = modifyProductDetails($product, $prodLineId);
+$prodArray = modifyProductDetails($product, $prodLineId);
 
 
 // =========== THE MAIN FORM =================

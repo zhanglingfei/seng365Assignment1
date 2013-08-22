@@ -1,9 +1,22 @@
-<p>
-    <?php
-    echo comboBoxHtml('customers', $customerMap, $customerId);
-    echo comboBoxHtml('orders', $orderMap, $orderId);
-    ?>
-</p>
+<table id="OrderComboBoxes">
+    <tr>
+        <th>Customers</th>
+        <th>Orders</th>
+    </tr>
+    <tr>
+        <td>
+            <?php 
+            echo comboBoxHtml('customers', $customerMap, $customerId); 
+            ?>
+        </td>
+        <td>
+            <?php
+            echo comboBoxHtml('orders', $orderMap, $orderId);
+            ?>
+        </td>
+    </tr>
+</table>
+
 <h2>Order Details</h2>
 
 <table id='OrderDetails' border="1" style="border-collapse:collapse">
@@ -18,7 +31,9 @@
     }
     ?>
 </table>
-<p></p>
+
+<h3>Order Lines</h3>
+
 <table id='OrderLines' border="1" style="border-collapse:collapse">
     <?php $headers = $orderLines[0]; ?>
     <tr>
