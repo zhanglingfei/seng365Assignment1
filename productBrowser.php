@@ -3,6 +3,8 @@ require_once ('dbinit.php');
 require_once('productLines.php');
 require_once ('product.php');
 
+session_start();
+
 /* Return HTML to display a combo box with the given label
  * (which is also used for both the name and the id of the select
  * element), filling it with the contents of the given map
@@ -54,8 +56,12 @@ $prodLinesMap = ProductLines::listAll();
 
 if ($isReload) {
     $prodLineId = $_POST['productLines'];
+    $_SESSION['productLine'] = $prodLineId;
+} else if (isset($_SESSION['productLine'])){
+    $prodLineId = $_SESSION['productLine'];
 } else {
     $prodLineId = array_shift(array_keys($prodLinesMap));
+    $_SESSION['productLine'] = $prodLineId;
 }
 
 // Get a map from ProductId to ProductName for all products in the current
@@ -69,8 +75,13 @@ $productMap = Product::listAll($prodLineId);
 
 if ($isReload && $_POST['whatChanged'] === 'Products') {
     $prodId = $_POST['products'];
+    $_SESSION['product'] = $prodId;
+
+} else if (!$isReload && isset($_SESSION['product'])){
+    $prodId = $_SESSION['product'];
 } else {
     $prodId = array_shift(array_keys($productMap));
+    $_SESSION['product'] = $prodId;
 }
 
 $product = Product::read($prodId);
