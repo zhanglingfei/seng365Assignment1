@@ -12,8 +12,8 @@
         orderLinesXHR = null,
         orderListXHR = null,
         orderDetailsXHR = null;  // XMLHttpRequest for product details
-    
-    
+
+
     // Adds a (text, value) option to a select element
     function addOption(selectbox, text, value) {
         var option = document.createElement("option");
@@ -21,27 +21,36 @@
         option.value = value;
         selectbox.options.add(option);
     }
-    
+
     function orderLinesArrived() {
-        var orderLines, orderLinesTable, i, j, rows, cells, line;
-        
-        if (orderDetailsXHR.readyState === REQUEST_COMPLETE &&
-                orderDetailsXHR.status === OK) {
-            
+        var orderLines, orderLinesTable, rowLen, i, j, rows, row, cell, line;
+
+        if (orderLinesXHR.readyState === REQUEST_COMPLETE &&
+                orderLinesXHR.status === OK) {
+
             orderLines = JSON.parse(orderLinesXHR.responseText);
             orderLinesTable = document.getElementById("OrderLines");
             rows = orderLinesTable.rows;
-            
-            for (i = 1; i < rows.length; i += 1) {
-                line = orderLines[i];
-                cells = rows[i].cells;
-                for (j = 0; j < cells.length; j += 1) {
-                    cells[j].innerHTML = line[rows[0].cells[j].innerHTML];
+
+            rowLen = rows.length;
+
+            for (i = 0; i < rowLen - 1; i += 1) {
+                orderLinesTable.deleteRow(1);
+            }
+
+            console.log(rows[0].cells.length);
+
+            for (i = 1; i < orderLines.length + 1; i += 1) {
+                row = orderLinesTable.insertRow(i);
+                line = orderLines[i - 1];
+                for (j = 0; j < rows[0].cells.length; j += 1) {
+                    cell = row.insertCell(j);
+                    cell.innerHTML = line[rows[0].cells[j].innerHTML];
                 }
             }
         }
     }
-    
+
     function loadOrderLines() {
         var orderID = document.getElementById("orders").value,
             resource = "orderlinesjson.php?orderId=" + orderID;
@@ -49,9 +58,9 @@
         orderLinesXHR = new XMLHttpRequest();
         orderLinesXHR.onreadystatechange = orderLinesArrived;
         orderLinesXHR.open("GET", resource, true);
-        orderLinesXHR.send();   
+        orderLinesXHR.send();
     }
-    
+
     // Called asynchronously as the state of the
     // productDetailsXHR for the currently select product details changes.
     function orderDetailsArrived() {
@@ -72,7 +81,7 @@
         }
         loadOrderLines();
     }
-    
+
     // Called by the category combo box's onChange event.
     // Initiates an XMLHttpRequest to obtain the list of product
     // names and IDs required to update the Products combo box.
@@ -84,8 +93,8 @@
         orderDetailsXHR.onreadystatechange = orderDetailsArrived;
         orderDetailsXHR.open("GET", resource, true);
         orderDetailsXHR.send();
-    } 
-    
+    }
+
         // Called asynchronously as the state of the
     // XMLHttpRequest for a new product list changes.
     function newOrderListArrived() {
@@ -110,7 +119,7 @@
             loadOrderDetails();
         }
     }
-    
+
         // Called by the category combo box's onChange event.
     // Initiates an XMLHttpRequest to obtain the list of product
     // names and IDs required to update the Products combo box.
@@ -130,7 +139,7 @@
         orderListXHR.send();
     }
 
-        
+
     /* Initialisation: bind the event handlers and kick it into life by calling
     * categoryChanged().
     */
