@@ -1,6 +1,6 @@
 <?php
 /*
- * Declare the Product class, representing a row of the products table.
+ * Declare the Order class, representing a row of the Ass1_Orders table.
  * Since the database was imported from elsewhere and has capital letters
  * at the start of each field name, an internal tweak is used to convert
  * column names to php lower-case-first format.
@@ -22,8 +22,8 @@ class Order {
     public $customerId;
 
     /*
-     * Return a Product object read from the database for the given product.
-     * Throws an exception if no such product exists in the database.
+     * Return an Order object read from the database for the given order.
+     * Throws an exception if no such order exists in the database.
      */
     public static function read($id) {
         global $DB;
@@ -39,6 +39,12 @@ class Order {
         return $prod;
     }
     
+    /*
+     * Return an Order object read from the database for the given order,
+     * containing only the information of particular columns
+     * (the rest of the attributes of the order have a value of NULL).
+     * Throws an exception if no such order exists in the database.
+     */
     public static function readColumns($id) {
         global $DB;
         $prod = new Order();
@@ -55,11 +61,12 @@ class Order {
     }
 
 
-    /** Return an associative array id=>productName for all products in the
-     *  database, or all matching a given productLineId (if given).
+    /** Return an associative array id=>orderNumber for all orders in the
+     *  database, or all matching a given customerId (if given).
      * @global mysqli $DB
-     * @param int $prodLineId
-     * @return associative array mapping productId to product, ordered by name
+     * @param int $customerId  Ass1_Customers ID that orders are from (optional)
+     * @return associative array mapping orderId to orderNumber, 
+     * ordered by orderNumber.
      */
     public static function listAll($customerId=NULL) {
         global $DB;
@@ -77,11 +84,10 @@ class Order {
         return $list;
     }
 
-        /** Return an associative array id=>productName for all products in the
-     *  database, or all matching a given productLineId (if given).
+    /** Return an associative array id=>customerName for all customers in the
+     *  database who have placed orders.
      * @global mysqli $DB
-     * @param int $prodLineId
-     * @return associative array mapping productId to product, ordered by name
+     * @return associative array mapping customerId to customerName, ordered by name
      */
     public static function listAllCustomers() {
         global $DB;
@@ -102,12 +108,11 @@ class Order {
         return $list;
     }
 
-    /** Return an array of all products in the database (or the subset
-     *  matching the given prodLine ID if given), for use by
-     *  nwproductBrowser3.
+    /** Return an array of all orders in the database (or the subset
+     *  matching the given customerId if given).
      * @global mysqli $DB
-     * @param int $prodLineId  ProductLines ID that products are from (optional)
-     * @return an array of Product objects containing all products, ordered
+     * @param int $customerId  Ass1_Customers ID that orders are from (optional)
+     * @return an array of Order objects containing all orders, ordered
      * by name.
      */
     public static function getAllOrders($customerId=NULL) {

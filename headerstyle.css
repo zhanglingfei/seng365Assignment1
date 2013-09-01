@@ -1,0 +1,19 @@
+h1 {
+	text-align:center;
+}
+
+#menu {
+	text-align:center;
+}
+
+a {
+	padding:15px;
+}
+
+td, th {
+	padding:3px;
+}
+
+#OrderDetails, #SelectedProduct {
+	text-align:left;
+}

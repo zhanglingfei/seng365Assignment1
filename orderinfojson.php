@@ -1,7 +1,6 @@
 <?php
 header("Content-type: application/json; charset=utf-8");
-// The handler for the ProductList XMLHttpRequest but this time
-// returning JSON-encoded data.
+// The handler for the OrderDetails XMLHttpRequest returning JSON-encoded data.
 
 require_once('dbinit.php');
 require_once('order.php');
