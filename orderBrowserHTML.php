@@ -1,3 +1,9 @@
+<!---
+Main body of HTML for product browser; includes end tags for body and html.
+The file 'headerHTML.php' must be included before this file.
+Code based off of nwproductbrowser4.php from lab 5.
+-->
+
 <table id="OrderComboBoxes">
     <tr>
         <th>Customers</th>

@@ -4,20 +4,49 @@ Fix this page (including adding info about actual code), documentation, comments
 </p>
 
 <p>
-This site allows a user to view the details of a particular product offered by the Classic Models company, and to view the details of a particular order.
+This site allows a user to view the details of the products offered by the Classic Models company, and to view the details of customers' orders.
+<br>
+The product browser allows a user to select a product line and then select a particular product in that line. The details of the product are then shown in a table. 
+<br>
+The order browser allows a user to select a particular customer and then select an order to view. The details of the order and all the lines of the order are then displayed in two tables.
 </p>
+
 <p>
 There are no known bugs and no important usage information for this site.
 </p> 
 
+<h2>Implementation and Design Decisions</h2>
+
 <h3>Product Browser</h3>
 <p>
-The product browser allows a user to select a product line and then select a particular product in that product line to view the details of. The details give the product code, name, scale, vendor, a description of the product, and the quantity in stock, buy price, and MSRP.
+The product browser has been implemented using a postback pattern. JavaScript has only been used for two simple event handlers, to take note of which combo box was changed and then submit the form. 
+<br>
+A session variable has been used to keep track of the most recent product and product line viewed. This allows the user to change pages, say to view an order, then go to the product browser again and still be viewing the details of the same product.
+<br>
+When the page is submitted, the postback uses the values of the POST variables and the SESSION variables to determine which product's details to display.
 </p>
 
 <h3>Order Browser</h3>
 <p>
-The order browser allows a user to select a particular customer whose orders they wish to view, then select a particular order. The details of the order, such as the order date and shipping date are displayed, along with the lines of the order, giving the product name, quantity ordered, and price for each product ordered.
+The order browser has a more JavaScript-oriented implementation. The combo boxes and tables are populated using AJAX, with JSON-encoded data.
+<br>
+As this page is an order browser, I decided not to include customers without any orders as that could potentially confuse users and also significantly increase the number of entries in the combo box without providing any more information about orders which have been placed.
+<br>
+I also decided to display all of the lines of the order at once rather than selecting a particular line to view. I decided that seeing the entire order would be easier for a user than having to switch between multiple different order lines (of which there might be quite a few).
+</p>
+
+<h3>Models</h3>
+<p>
+I created classes for product lines, products, orders, and order details. These classes provide a level of abstraction for accessing the information in the database. Each class provides a read function which takes the id of a particular row of the corresponding table and returns an object of the class corresponding to that row, with each column as an attribute of the object. The classes also contain various other functions which return the information required by particular parts of the website.
+<br>
+access multiple tables...
+<br>
+JSON files
+</p>
+
+<h3>html</h3>
+<p>
+As each file's html has a very similar title and menu, I have placed this in a separate file, which uses a variable $title. This file, headerHTML.php, must be included before the file containing the rest of the html for the page, which must also close the body and head tags at the end. This allows for non-repetitive code and the header could easily be changed for all files to keep it consistent (or changed for a single file if necessary by not including the file and writing it at the beginning of the main html file for that page.
 </p>
 
 <h3>"id" columns in the database tables</h3>

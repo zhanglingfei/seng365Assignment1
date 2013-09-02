@@ -1,18 +1,29 @@
 <?php
+/*
+ * Allows user to browser products by product line and then product name
+ * and to view the product's details.
+ *
+ * Uses a postback to alter variables and update the page.
+ * Also implements persistence, keeping track of the last product viewed
+ * and displaying it again if there is no postback (eg reload).
+ *
+ * Code (particularly comboBoxHtml function) based off of 
+ * nwproductbrowser2.php from lab 4.
+ */
+
 require_once ('dbinit.php');
 require_once('productLines.php');
 require_once ('product.php');
 
 session_start();
 
-/* Return HTML to display a combo box with the given label
- * (which is also used for both the name and the id of the select
- * element), filling it with the contents of the given map
+/* Return HTML to display a combo box with the specified "label" 
+ * used for both the name and the id of the select
+ * element, filling it with the contents of the given map
  * (which is an associative id => name array).
  * Used for selecting elements from a table.
  * $selectedRowId is the id of the row to select in the combo box.
  */
-
 function comboBoxHtml($label, $map, $selectedRowId) {
     $html = "<select id='$label' name='$label'";
     $html .= " size=10>";
@@ -29,29 +40,13 @@ function comboBoxHtml($label, $map, $selectedRowId) {
     return $html;
 }
 
-function modifyProductDetails($product, $prodLineId) {
-    $prodArray = array();
-    foreach ($product as $field => $value) {
-        $prodArray["$field"] = $value;
-    }
-
-    $prodLineName = ProductLines::read($prodLineId)->productLine;
-    $prodLineArray = array("ProductLine" => $prodLineName);
-
-    $prodArrayBegin = array_slice($prodArray, 1, 2);
-    $prodArrayEnd = array_slice($prodArray, 4, 6);
-
-    $newArray = array_merge($prodArrayBegin, $prodLineArray, $prodArrayEnd);
-
-    return $newArray;
-}
-
 $isReload = isset($_POST['productLines']) && isset($_POST['products']);
 
-// Get from the database a map from CategoryId to Category Name, for use
-// with the Category combo box. The current category is taken to
-// be the currently selected one on a reload or the first category
-// in the map otherwise.
+// Get from the database a map from productLineId to productLineName, for use
+// with the Product Lines combo box. The current product line is taken to
+// be the currently selected one on a reload, otherwise the one stored in the
+// session variable 'productLine', or the first product line in the map if 
+// neither of the previous two cases occurs. 
 
 $prodLinesMap = ProductLines::listAll();
 
@@ -65,14 +60,13 @@ if ($isReload) {
     $_SESSION['productLine'] = $prodLineId;
 }
 
-// Get a map from ProductId to ProductName for all products in the current
-// category, for use with the Product combo box.
+// Get from the database a map from productId to productName, for use
+// with the Products combo box. The current producte is taken to
+// be the currently selected one on a reload, otherwise the one stored in the
+// session variable 'product', or the first product in the map if neither
+// of the previous two cases occurs. 
 
 $productMap = Product::listAll($prodLineId);
-
-// Get the currently-selected product details from the Products table.
-// The currently product is taken from the combobox on a reload or
-// as the first item in the map otherwise.
 
 if ($isReload && $_POST['whatChanged'] === 'Products') {
     $prodId = $_POST['products'];
@@ -85,8 +79,11 @@ if ($isReload && $_POST['whatChanged'] === 'Products') {
     $_SESSION['product'] = $prodId;
 }
 
+// Get from the database the details of the currently selected product
+// and the productLineName for use with the SelectedProduct table.
+
 $product = Product::read($prodId);
-$prodArray = modifyProductDetails($product, $prodLineId);
+$prodLineName = ProductLines::read($prodLineId)->productLine;
 
 
 // =========== THE MAIN FORM =================

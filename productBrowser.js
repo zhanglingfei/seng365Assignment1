@@ -1,5 +1,7 @@
 /**
  * JavaScript for productBrowser.php
+ *
+ * Code heavily based off of nwproductbrowser2.js from lab 4.
  */
 
 (function () {
