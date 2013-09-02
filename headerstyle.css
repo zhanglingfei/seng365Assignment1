@@ -17,3 +17,7 @@ td, th {
 #OrderDetails, #SelectedProduct {
 	text-align:left;
 }
+
+#orders {
+    width:70px;
+}

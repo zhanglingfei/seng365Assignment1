@@ -23,8 +23,8 @@
             <table id="SelectedProduct" border="1" style="border-collapse:collapse">
                 <?php foreach ($prodArray as $key => $value) { ?>
                     <tr>
-                        <th><?php echo $key ?></th>
-                        <td><?php echo $value ?></td>
+                        <th><?php echo htmlspecialchars($key); ?></th>
+                        <td><?php echo htmlspecialchars($value); ?></td>
                     </tr>
                 <?php } ?>
             </table>

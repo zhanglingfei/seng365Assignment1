@@ -5,6 +5,8 @@
  * within the code below.
  *
  * It also provides the option of turning on extra debugging capabilities.
+ * 
+ * (Code from labs)
  */
 
 define('DEBUGGING', true);

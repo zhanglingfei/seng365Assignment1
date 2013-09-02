@@ -1,11 +1,15 @@
 /**
- * JavaScript for nwproductbrowser2.php
+ * JavaScript for productBrowser.php
  */
 
 (function () {
     'use strict';
     /*jslint browser: true, devel: true, indent: 4, maxlen: 80 */
 
+    /*
+     * Check which combo box has been clicked, set 'whatChanged',
+     * and submit form.
+     */
     function bindHandlers() {
         var productLinesCombo = document.getElementById('productLines'),
             productsCombo = document.getElementById('products');

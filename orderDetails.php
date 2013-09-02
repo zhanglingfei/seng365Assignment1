@@ -5,11 +5,9 @@
  * at the start of each field name, an internal tweak is used to convert
  * column names to php lower-case-first format.
  *
- * Implements only the Read function, since we're just implementing a product
- * browser, plus a listAll function that returns a map from productID to
- * productName for all products in the database.
- *
  * This class requires that a global mysqli variable $DB exists.
+ * 
+ * (Code based on labs)
  */
 class OrderDetails {
     public $id;

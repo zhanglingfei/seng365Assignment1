@@ -21,7 +21,8 @@ function comboBoxHtml($label, $map, $selectedRowId) {
         } else {
             $selected = '';
         }
-        $html .= "<option value='$id' $selected>$name</option>\n";
+        $html .= "<option value='" . htmlspecialchars($id) . "' $selected>" . 
+                htmlspecialchars($name) . "</option>\n";
     }
     $html .= "</select>\n";
     return $html;
@@ -42,7 +43,6 @@ $orderLines = OrderDetails::getOrderLines($orderId);
 
 // =========== THE MAIN FORM =================
 $title = "Orders";
-require_once('generalHeadHTML.php');
-require_once('menuHTML.php');
+require_once('headerHTML.php');
 require_once('orderBrowserHTML.php');
 ?>

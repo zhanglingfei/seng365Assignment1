@@ -1,15 +1,13 @@
 <?php
-/*
+/* 
  * Declare the Order class, representing a row of the Ass1_Orders table.
  * Since the database was imported from elsewhere and has capital letters
  * at the start of each field name, an internal tweak is used to convert
  * column names to php lower-case-first format.
  *
- * Implements only the Read function, since we're just implementing a product
- * browser, plus a listAll function that returns a map from productID to
- * productName for all products in the database.
- *
  * This class requires that a global mysqli variable $DB exists.
+ * 
+ * (Code based on labs)
  */
 class Order {
     public $id;
@@ -27,6 +25,7 @@ class Order {
      */
     public static function read($id) {
         global $DB;
+        $id = $DB->real_escape_string($id);
         $prod = new Order();
         $sql = "SELECT * FROM Ass1_Orders WHERE id='$id'";
         $result = $DB->query($sql);
@@ -42,11 +41,12 @@ class Order {
     /*
      * Return an Order object read from the database for the given order,
      * containing only the information of particular columns
-     * (the rest of the attributes of the order have a value of NULL).
+     * (the rest of the attributes are given a value of NULL).
      * Throws an exception if no such order exists in the database.
      */
     public static function readColumns($id) {
         global $DB;
+        $id = $DB->real_escape_string($id);
         $prod = new Order();
         $sql = "SELECT orderDate, requiredDate, shippedDate, status, comments";
         $sql .= " FROM Ass1_Orders WHERE id='$id'";
@@ -70,6 +70,7 @@ class Order {
      */
     public static function listAll($customerId=NULL) {
         global $DB;
+        $customerId = $DB->real_escape_string($customerId);
         $sql = "SELECT id, orderNumber FROM Ass1_Orders";
         if ($customerId) {
             $sql .= " where customerId = '$customerId'";
@@ -87,11 +88,13 @@ class Order {
     /** Return an associative array id=>customerName for all customers in the
      *  database who have placed orders.
      * @global mysqli $DB
-     * @return associative array mapping customerId to customerName, ordered by name
+     * @return associative array mapping customerId to customerName, 
+     * ordered by name.
      */
     public static function listAllCustomers() {
         global $DB;
         
+        //nested query to determine if customer has orders
         $subquery = "(SELECT * FROM Ass1_Orders";
         $subquery .= " WHERE Ass1_Customers.id = Ass1_Orders.customerId)";
         
@@ -109,14 +112,15 @@ class Order {
     }
 
     /** Return an array of all orders in the database (or the subset
-     *  matching the given customerId if given).
+     *  matching the given customerId, if given).
      * @global mysqli $DB
      * @param int $customerId  Ass1_Customers ID that orders are from (optional)
      * @return an array of Order objects containing all orders, ordered
-     * by name.
+     * by orderNumber.
      */
     public static function getAllOrders($customerId=NULL) {
         global $DB;
+        $customerId = $DB->real_escape_string($customerId);
         $sql = "SELECT * FROM Ass1_Orders";
         if ($customerId) {
             $sql .= " WHERE customerId = '$customerId'";

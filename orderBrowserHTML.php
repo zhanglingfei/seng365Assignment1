@@ -23,8 +23,8 @@
     <?php foreach ($order as $field => $value) {
         if ($value !== null) {?>
             <tr>
-                <th><?php echo $field; ?></th>
-                <td><?php echo $value; ?></td>
+                <th><?php echo htmlspecialchars($field); ?></th>
+                <td><?php echo htmlspecialchars($value); ?></td>
             </tr>
         <?php
         }
@@ -38,14 +38,14 @@
     <?php $headers = $orderLines[0]; ?>
     <tr>
         <?php foreach($headers as $field => $value) { ?>
-            <th><?php echo $field; ?></th>
+            <th><?php echo htmlspecialchars($field); ?></th>
         <?php } ?>
     </tr>
     
     <?php foreach ($orderLines as $line) { ?>
     <tr>
         <?php foreach ($line as $value) { ?>
-            <td><?php echo $value; ?></td>
+            <td><?php echo htmlspecialchars($value); ?></td>
         <?php } ?>
     </tr>
     <?php } ?>

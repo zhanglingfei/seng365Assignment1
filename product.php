@@ -1,15 +1,13 @@
 <?php
 /*
- * Declare the Product class, representing a row of the products table.
+ * Declare the Product class, representing a row of the Ass1_Products table.
  * Since the database was imported from elsewhere and has capital letters
  * at the start of each field name, an internal tweak is used to convert
  * column names to php lower-case-first format.
  *
- * Implements only the Read function, since we're just implementing a product
- * browser, plus a listAll function that returns a map from productID to
- * productName for all products in the database.
- *
  * This class requires that a global mysqli variable $DB exists.
+ * 
+ * (Code based on labs)
  */
 class Product {
     public $id;
@@ -29,6 +27,7 @@ class Product {
      */
     public static function read($id) {
         global $DB;
+        $id = $DB->real_escape_string($id);
         $prod = new Product();
         $sql = "SELECT * FROM Ass1_Products WHERE id='$id'";
         $result = $DB->query($sql);
@@ -45,13 +44,15 @@ class Product {
     /** Return an associative array id=>productName for all products in the
      *  database, or all matching a given productLineId (if given).
      * @global mysqli $DB
-     * @param int $prodLineId
+     * @param int $prodLineId Ass1_ProductLines ID that products are from 
+     * (optional)
      * @return associative array mapping productId to product, ordered by name
      */
     public static function listAll($prodLineId=NULL) {
         global $DB;
         $sql = "SELECT id, productName FROM Ass1_Products";
         if ($prodLineId) {
+            $prodLineId = $DB->real_escape_string($prodLineId);
             $sql .= " where productLineId = '$prodLineId'";
         }
         $sql .= " ORDER BY productName";
@@ -66,10 +67,10 @@ class Product {
 
 
     /** Return an array of all products in the database (or the subset
-     *  matching the given prodLineegory ID if given), for use by
-     *  nwproductBrowser3.
+     *  matching the given prodLine ID if given).
      * @global mysqli $DB
-     * @param int $prodLineId  ProductLines ID that products are from (optional)
+     * @param int $prodLineId  Ass1_ProductLines ID that products are from 
+     * (optional)
      * @return an array of Product objects containing all products, ordered
      * by name.
      */
@@ -77,6 +78,7 @@ class Product {
         global $DB;
         $sql = "SELECT * FROM Ass1_Products";
         if ($prodLineId) {
+            $prodLineId = $DB->real_escape_string($prodLineId);
             $sql .= " WHERE productLineId = '$prodLineId'";
         }
         $sql .= " ORDER BY productName";

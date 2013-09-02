@@ -1,13 +1,10 @@
 <?php
 /*
- * Declare the ProductLines class, representing a row of the productLines table.
+ * Declare the ProductLines class, representing a row of the Ass1_ProductLines 
+ * table.
  * Since the database was imported from elsewhere and has capital letters
  * at the start of each field name, an internal tweak is used to convert
  * column names to php lower-case-first format.
- *
- * Implements only the Read function, since we're just implementing a product
- * browser, plus a listAll function that returns a map from productID to
- * productName for all products in the database.
  *
  * This class requires that a global mysqli variable $DB exists.
  */
@@ -19,11 +16,13 @@ class ProductLines {
     public $image;
 
     /*
-     * Return a ProductLine object read from the database for the given productLine.
-     * Throws an exception if no such product exists in the database.
+     * Return a ProductLine object read from the database for the given 
+     * productLine.
+     * Throws an exception if no such productLine exists in the database.
      */
     public static function read($id) {
         global $DB;
+        $id = $DB->real_escape_string($id);
         $prod = new ProductLines();
         $sql = "SELECT * FROM Ass1_ProductLines WHERE id='$id'";
         $result = $DB->query($sql);
