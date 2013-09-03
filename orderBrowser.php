@@ -14,7 +14,6 @@
 require_once ('dbinit.php');
 require_once('orderDetails.php');
 require_once ('order.php');
-require_once ('customer.php');
 
 /* Return HTML to display a combo box with the specified "label" 
  * used for both the name and the id of the select
