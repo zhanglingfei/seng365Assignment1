@@ -1,3 +1,10 @@
+<!--
+html for title and menu of all pages.
+
+Note that footerHTML.php must be included after this file (possibly with other
+files in between) in order to close the body and head tags.
+-->
+
 <!DOCTYPE html>
 <html>
     <head>

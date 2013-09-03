@@ -1,7 +1,7 @@
 /*
  * The JavaScript for orderBrowser.php, using JSON for data transfers.
  *
- * Code based off of nwproductbrowser5.js from lab 5.
+ * Code based off of nwproductbrowser5.js from lab 5, with alterations.
  */
 
 (function () {
@@ -15,23 +15,24 @@
         orderDetailsXHR = null;  // XMLHttpRequest for product details
 
 
+    // Equivalent of htmlspecialchars in php.
+    // From http://stackoverflow.com/questions/1787322/
+    // htmlspecialchars-equivalent-in-javascript
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     // Adds a (text, value) option to a select element
     function addOption(selectbox, text, value) {
         var option = document.createElement("option");
         option.text = escapeHtml(text);
         option.value = escapeHtml(value);
         selectbox.options.add(option);
-    }
-    
-    // Equivalent of htmlspecialchars in php.
-    // From http://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript
-    function escapeHtml(text) { 
-    return text 
-    	.replace(/&/g, "&amp;") 
-    	.replace(/</g, "&lt;") 
-    	.replace(/>/g, "&gt;") 
-    	.replace(/"/g, "&quot;") 
-    	.replace(/'/g, "&#039;"); 
     }
 
     /*
@@ -60,7 +61,8 @@
                 line = orderLines[i - 1];
                 for (j = 0; j < rows[0].cells.length; j += 1) {
                     cell = row.insertCell(j);
-                    cell.innerHTML = escapeHtml(line[rows[0].cells[j].innerHTML]);
+                    cell.innerHTML =
+                            escapeHtml(line[rows[0].cells[j].innerHTML]);
                 }
             }
         }
@@ -100,9 +102,10 @@
             for (i = 0; i < rows.length; i += 1) {
                 cells = rows[i].cells;
                 if (order[cells[0].innerHTML] !== null) {
-                	cells[1].innerHTML = escapeHtml(order[cells[0].innerHTML]);
+                    cells[1].innerHTML =
+                            escapeHtml(order[cells[0].innerHTML]);
                 } else {
-                	cells[1].innerHTML = "";
+                    cells[1].innerHTML = "";
                 }
             }
         }

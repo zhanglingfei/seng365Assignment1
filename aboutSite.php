@@ -4,4 +4,5 @@
 $title = "About this Site";
 require_once('headerHTML.php');
 require_once('aboutSiteHTML.php');
+require_once('footerHTML.php');
 ?>

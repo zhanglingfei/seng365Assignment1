@@ -7,8 +7,7 @@
  * Also implements persistence, keeping track of the last product viewed
  * and displaying it again if there is no postback (eg reload).
  *
- * Code (particularly comboBoxHtml function) based off of 
- * nwproductbrowser2.php from lab 4.
+ * Code based off of nwproductbrowser2.php from lab 4, with alterations.
  */
 
 require_once ('dbinit.php');
@@ -90,4 +89,5 @@ $prodLineName = ProductLines::read($prodLineId)->productLine;
 $title = "Products";
 require_once('headerHTML.php');
 require_once('productBrowserHTML.php');
+require_once('footerHTML.php');
 ?>

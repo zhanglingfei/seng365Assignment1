@@ -11,8 +11,8 @@ Code based off of nwproductbrowser4.php from lab 5.
     </tr>
     <tr>
         <td>
-            <?php 
-            echo comboBoxHtml('customers', $customerMap, $customerId); 
+            <?php
+            echo comboBoxHtml('customers', $customerMap, $customerId);
             ?>
         </td>
         <td>
@@ -27,12 +27,13 @@ Code based off of nwproductbrowser4.php from lab 5.
 
 <table id='OrderDetails' border="1" style="border-collapse:collapse">
     <?php foreach ($order as $field => $value) {
-        if ($value !== null) {?>
+        if ($value !== null) {
+            ?>
             <tr>
                 <th><?php echo htmlspecialchars($field); ?></th>
                 <td><?php echo htmlspecialchars($value); ?></td>
             </tr>
-        <?php
+            <?php
         }
     }
     ?>
@@ -41,23 +42,20 @@ Code based off of nwproductbrowser4.php from lab 5.
 <h3>Order Lines</h3>
 
 <table id='OrderLines' border="1" style="border-collapse:collapse">
-    <?php $headers = $orderLines[0]; ?>
+        <?php $headers = $orderLines[0]; ?>
     <tr>
-        <?php foreach($headers as $field => $value) { ?>
+        <?php foreach ($headers as $field => $value) { ?>
             <th><?php echo htmlspecialchars($field); ?></th>
         <?php } ?>
     </tr>
-    
-    <?php foreach ($orderLines as $line) { ?>
-    <tr>
-        <?php foreach ($line as $value) { ?>
-            <td><?php echo htmlspecialchars($value); ?></td>
+
+        <?php foreach ($orderLines as $line) { ?>
+        <tr>
+            <?php foreach ($line as $value) { ?>
+                <td><?php echo htmlspecialchars($value); ?></td>
+            <?php } ?>
+        </tr>
         <?php } ?>
-    </tr>
-    <?php } ?>
 </table>
 
 <script type='text/javascript' src="orderBrowser.js" ></script>
-
-</body>
-</html>

@@ -7,7 +7,7 @@
  *
  * This class requires that a global mysqli variable $DB exists.
  * 
- * (Code based on labs)
+ * Code based off of product.php from lab 5, with alterations.
  */
 class OrderDetails {
     public $id;

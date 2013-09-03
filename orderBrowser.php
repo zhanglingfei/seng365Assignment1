@@ -7,8 +7,7 @@
  * and a new set of order details and order lines whenever the 
  * order changes, encoding the data in JSON.
  *
- * Code (particularly comboBoxHtml function) based off of 
- * nwproductbrowser4.php from lab 5.
+ * Code based off of nwproductbrowser4.php from lab 5, with alterations.
  */
  
 require_once ('dbinit.php');
@@ -65,4 +64,5 @@ $orderLines = OrderDetails::getOrderLines($orderId);
 $title = "Orders";
 require_once('headerHTML.php');
 require_once('orderBrowserHTML.php');
+require_once('footerHTML.php');
 ?>

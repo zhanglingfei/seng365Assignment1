@@ -7,6 +7,8 @@
  * column names to php lower-case-first format.
  *
  * This class requires that a global mysqli variable $DB exists.
+ * 
+ * Code based off of product.php from lab 5, with alterations.
  */
 class ProductLines {
     public $id;

@@ -6,7 +6,7 @@
  *
  * It also provides the option of turning on extra debugging capabilities.
  * 
- * (Code from labs)
+ * This file is taken directly from the labs.
  */
 
 define('DEBUGGING', true);
